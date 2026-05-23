@@ -9,6 +9,30 @@
     <body>
         <main class="newtab-shell" aria-label="Vimdeck new tab">
             <section class="command-center" aria-labelledby="newtab-title">
+                <header class="newtab-toolbar">
+                    <h1 id="newtab-title">Vimdeck</h1>
+                    <div
+                        class="theme-switch"
+                        role="group"
+                        aria-label="Theme"
+                    >
+                        <button
+                            id="themeDark"
+                            type="button"
+                            data-theme-value="dark"
+                        >
+                            Dark
+                        </button>
+                        <button
+                            id="themeLight"
+                            type="button"
+                            data-theme-value="light"
+                        >
+                            Light
+                        </button>
+                    </div>
+                </header>
+
                 <form class="search-form" id="searchForm">
                     <label class="search-label" for="searchInput"
                         >Search or open URL</label

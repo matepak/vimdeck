@@ -1,7 +1,9 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "newtabShortcuts";
+  const SHORTCUTS_STORAGE_KEY = "newtabShortcuts";
+  const THEME_STORAGE_KEY = "newtabTheme";
+  const DEFAULT_THEME = "dark";
   const DEFAULT_SHORTCUTS = [
     { name: "GitHub", url: "https://github.com" },
     { name: "Docs", url: "https://developer.mozilla.org" }
@@ -9,6 +11,7 @@
 
   const searchForm = document.getElementById("searchForm");
   const searchInput = document.getElementById("searchInput");
+  const themeButtons = Array.from(document.querySelectorAll("[data-theme-value]"));
   const shortcutDialog = document.getElementById("shortcutDialog");
   const shortcutForm = document.getElementById("shortcutForm");
   const openShortcutDialog = document.getElementById("openShortcutDialog");
@@ -21,7 +24,9 @@
   const emptyState = document.getElementById("emptyState");
 
   let shortcuts = [];
+  let theme = DEFAULT_THEME;
 
+  loadTheme();
   loadShortcuts();
 
   searchForm.addEventListener("submit", (event) => {
@@ -33,6 +38,10 @@
   shortcutForm.addEventListener("submit", (event) => {
     event.preventDefault();
     addShortcut();
+  });
+
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => saveTheme(button.dataset.themeValue));
   });
 
   openShortcutDialog.addEventListener("click", () => {
@@ -67,14 +76,33 @@
   });
 
   function loadShortcuts() {
-    chrome.storage.sync.get({ [STORAGE_KEY]: DEFAULT_SHORTCUTS }, (data) => {
-      shortcuts = normalizeShortcuts(data[STORAGE_KEY]);
+    chrome.storage.sync.get({ [SHORTCUTS_STORAGE_KEY]: DEFAULT_SHORTCUTS }, (data) => {
+      shortcuts = normalizeShortcuts(data[SHORTCUTS_STORAGE_KEY]);
       renderShortcuts();
     });
   }
 
+  function loadTheme() {
+    chrome.storage.sync.get({ [THEME_STORAGE_KEY]: DEFAULT_THEME }, (data) => {
+      setTheme(data[THEME_STORAGE_KEY]);
+    });
+  }
+
+  function saveTheme(value) {
+    setTheme(value);
+    chrome.storage.sync.set({ [THEME_STORAGE_KEY]: theme });
+  }
+
+  function setTheme(value) {
+    theme = value === "light" ? "light" : "dark";
+    document.documentElement.dataset.theme = theme;
+    themeButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.themeValue === theme));
+    });
+  }
+
   function saveShortcuts() {
-    chrome.storage.sync.set({ [STORAGE_KEY]: shortcuts }, renderShortcuts);
+    chrome.storage.sync.set({ [SHORTCUTS_STORAGE_KEY]: shortcuts }, renderShortcuts);
   }
 
   function addShortcut() {
