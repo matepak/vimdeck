@@ -17,6 +17,7 @@
     hints: "Open link hints",
     goBack: "History back",
     goForward: "History forward",
+    help: "Open help",
     openTab: "Open new tab",
     closeTab: "Close tab",
     cancel: "Cancel"

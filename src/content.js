@@ -19,6 +19,7 @@
       hints: "f",
       goBack: "H",
       goForward: "L",
+      help: "?",
       openTab: "t",
       closeTab: "x",
       cancel: "Escape"
@@ -32,7 +33,8 @@
     sequenceTimer: 0,
     hints: [],
     hintQuery: "",
-    hintLayer: null
+    hintLayer: null,
+    helpLayer: null
   };
 
   loadSettings();
@@ -66,6 +68,11 @@
 
     if (state.hintLayer) {
       handleHintKey(event);
+      return;
+    }
+
+    if (state.helpLayer) {
+      handleHelpKey(event);
       return;
     }
 
@@ -114,6 +121,7 @@
     }
 
     state.sequence = "";
+    if (key === keymap.help) return "help";
     return Object.entries(keymap).find(([, mappedKey]) => mappedKey === key)?.[0] || null;
   }
 
@@ -132,9 +140,162 @@
     if (action === "pageUp") window.scrollBy({ top: -halfPage, behavior });
     if (action === "goBack") window.history.back();
     if (action === "goForward") window.history.forward();
+    if (action === "help") showHelp();
     if (action === "openTab") openNewTab();
     if (action === "closeTab") closeCurrentTab();
     if (action === "hints" && state.settings.hintsEnabled) showHints();
+  }
+
+  function showHelp() {
+    clearHelp();
+
+    const overlay = document.createElement("div");
+    const dialog = document.createElement("section");
+    const heading = document.createElement("div");
+    const title = document.createElement("h2");
+    const close = document.createElement("button");
+    const grid = document.createElement("div");
+
+    overlay.className = "vibe-vim-help-layer";
+    overlay.style.cssText = [
+      "position:fixed",
+      "inset:0",
+      "z-index:2147483647",
+      "display:grid",
+      "place-items:center",
+      "padding:24px",
+      "background:rgba(9,11,12,.72)",
+      "font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif"
+    ].join(";");
+
+    dialog.setAttribute("role", "dialog");
+    dialog.setAttribute("aria-modal", "true");
+    dialog.setAttribute("aria-labelledby", "vibe-vim-help-title");
+    dialog.style.cssText = [
+      "width:min(560px,100%)",
+      "max-height:min(720px,calc(100vh - 48px))",
+      "overflow:auto",
+      "border:1px solid #303836",
+      "border-radius:8px",
+      "background:#15191a",
+      "color:#e8ece7",
+      "box-shadow:0 24px 90px rgba(0,0,0,.58)"
+    ].join(";");
+
+    heading.style.cssText = [
+      "display:flex",
+      "align-items:center",
+      "justify-content:space-between",
+      "gap:16px",
+      "padding:18px 18px 10px"
+    ].join(";");
+
+    title.id = "vibe-vim-help-title";
+    title.textContent = "Mapped Keys";
+    title.style.cssText = "margin:0;color:#f5f0df;font-size:18px;line-height:1.2";
+
+    close.type = "button";
+    close.textContent = "x";
+    close.setAttribute("aria-label", "Close help");
+    close.style.cssText = [
+      "display:grid",
+      "width:30px",
+      "height:30px",
+      "place-items:center",
+      "border:1px solid #303836",
+      "border-radius:7px",
+      "background:#171c1d",
+      "color:#8d9691",
+      "font:700 15px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace",
+      "cursor:pointer"
+    ].join(";");
+    close.addEventListener("click", clearHelp);
+
+    grid.style.cssText = [
+      "display:grid",
+      "grid-template-columns:1fr",
+      "gap:8px",
+      "padding:8px 18px 18px"
+    ].join(";");
+
+    helpRows().forEach(({ key, label }) => {
+      const row = document.createElement("div");
+      const keyEl = document.createElement("kbd");
+      const labelEl = document.createElement("span");
+
+      row.style.cssText = [
+        "display:flex",
+        "align-items:center",
+        "justify-content:space-between",
+        "gap:16px",
+        "min-height:38px",
+        "border:1px solid #303836",
+        "border-radius:7px",
+        "padding:8px 10px",
+        "background:#171c1d"
+      ].join(";");
+
+      keyEl.textContent = displayKey(key);
+      keyEl.style.cssText = [
+        "min-width:54px",
+        "border-radius:5px",
+        "padding:5px 8px",
+        "background:#242b2a",
+        "color:#91d18b",
+        "text-align:center",
+        "font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
+      ].join(";");
+
+      labelEl.textContent = label;
+      labelEl.style.cssText = "color:#d4dad6;text-align:right";
+
+      row.append(keyEl, labelEl);
+      grid.appendChild(row);
+    });
+
+    heading.append(title, close);
+    dialog.append(heading, grid);
+    overlay.appendChild(dialog);
+    overlay.addEventListener("click", (event) => {
+      if (event.target === overlay) clearHelp();
+    });
+
+    state.helpLayer = overlay;
+    document.documentElement.appendChild(overlay);
+    close.focus({ preventScroll: true });
+  }
+
+  function helpRows() {
+    const keymap = state.settings.keymap;
+    const labels = {
+      scrollDown: "Scroll down",
+      scrollUp: "Scroll up",
+      scrollLeft: "Scroll left",
+      scrollRight: "Scroll right",
+      top: "Top of page",
+      bottom: "Bottom of page",
+      pageDown: "Half page down",
+      pageUp: "Half page up",
+      hints: "Open link hints",
+      goBack: "History back",
+      goForward: "History forward",
+      help: "Open help",
+      openTab: "Open new tab",
+      closeTab: "Close tab",
+      cancel: "Close modal / cancel"
+    };
+
+    return Object.entries(labels).map(([action, label]) => ({
+      key: keymap[action],
+      label
+    })).filter((row) => row.key);
+  }
+
+  function displayKey(key) {
+    if (key === "G") return "Shift+G";
+    if (key === "L") return "Shift+L";
+    if (key === "Escape") return "Esc";
+    return key;
   }
 
   function openNewTab() {
@@ -257,6 +418,16 @@
     }
   }
 
+  function handleHelpKey(event) {
+    const key = normalizeKey(event);
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (key === state.settings.keymap.cancel || key === state.settings.keymap.help) {
+      clearHelp();
+    }
+  }
+
   function updateHintVisibility() {
     const matches = state.hints.filter((hint) => hint.label.startsWith(state.hintQuery));
     state.hints.forEach((hint) => {
@@ -278,5 +449,10 @@
     state.hints = [];
     state.hintQuery = "";
     state.hintLayer = null;
+  }
+
+  function clearHelp() {
+    if (state.helpLayer) state.helpLayer.remove();
+    state.helpLayer = null;
   }
 })();

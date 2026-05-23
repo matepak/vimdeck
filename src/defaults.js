@@ -16,6 +16,7 @@ const VIBE_VIM_DEFAULTS = {
     hints: "f",
     goBack: "H",
     goForward: "L",
+    help: "?",
     openTab: "t",
     closeTab: "x",
     cancel: "Escape"
