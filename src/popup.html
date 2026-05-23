@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vibe Vim</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main class="panel">
+      <header>
+        <h1>Vibe Vim</h1>
+        <label class="switch">
+          <input id="enabled" type="checkbox">
+          <span>Enabled</span>
+        </label>
+      </header>
+
+      <section class="controls">
+        <label>
+          <input id="smoothScroll" type="checkbox">
+          <span>Smooth scroll</span>
+        </label>
+        <label>
+          <input id="hintsEnabled" type="checkbox">
+          <span>Link hints</span>
+        </label>
+      </section>
+
+      <section class="keys" aria-label="Default keys">
+        <div><kbd>j</kbd><span>Down</span></div>
+        <div><kbd>k</kbd><span>Up</span></div>
+        <div><kbd>h</kbd><span>Left</span></div>
+        <div><kbd>l</kbd><span>Right</span></div>
+        <div><kbd>gg</kbd><span>Top</span></div>
+        <div><kbd>G</kbd><span>Bottom</span></div>
+        <div><kbd>f</kbd><span>Hints</span></div>
+        <div><kbd>Esc</kbd><span>Cancel</span></div>
+      </section>
+
+      <a class="options-link" href="../src/options.html" target="_blank">Options</a>
+    </main>
+    <script src="defaults.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
