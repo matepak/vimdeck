@@ -1,73 +1,107 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>New Tab</title>
-    <link rel="stylesheet" href="newtab.css">
-  </head>
-  <body>
-    <main class="newtab-shell" aria-label="Vibe Vim new tab">
-      <section class="command-center" aria-labelledby="newtab-title">
-        <header class="newtab-header">
-          <div>
-            <p class="mode-line">NORMAL</p>
-            <h1 id="newtab-title">Vibe Vim</h1>
-          </div>
-          <div class="newtab-mark" aria-hidden="true">:tabnew</div>
-        </header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>New Tab</title>
+        <link rel="stylesheet" href="newtab.css" />
+    </head>
+    <body>
+        <main class="newtab-shell" aria-label="Vibe Vim new tab">
+            <section class="command-center" aria-labelledby="newtab-title">
+                <form class="search-form" id="searchForm">
+                    <label class="search-label" for="searchInput"
+                        >Search or open URL</label
+                    >
+                    <div class="search-row">
+                        <span class="prompt" aria-hidden="true">/</span>
+                        <input
+                            id="searchInput"
+                            name="query"
+                            type="search"
+                            autocomplete="off"
+                            spellcheck="false"
+                            placeholder="Search web or type a URL"
+                        />
+                        <button type="submit">Go</button>
+                    </div>
+                </form>
+                <section
+                    class="shortcuts-panel"
+                    aria-labelledby="shortcuts-title"
+                >
+                    <div class="panel-heading">
+                        <div>
+                            <h2 id="shortcuts-title">Shortcuts</h2>
+                            <p id="shortcutCount">0 marks</p>
+                        </div>
+                        <button
+                            class="icon-button"
+                            id="openShortcutDialog"
+                            type="button"
+                            aria-label="Add shortcut"
+                            title="Add shortcut"
+                        >
+                            +
+                        </button>
+                    </div>
+                    <div class="shortcut-grid" id="shortcutGrid"></div>
+                    <p class="empty-state" id="emptyState">No shortcuts yet.</p>
+                </section>
 
-        <form class="search-form" id="searchForm">
-          <label class="search-label" for="searchInput">Search or open URL</label>
-          <div class="search-row">
-            <span class="prompt" aria-hidden="true">/</span>
-            <input
-              id="searchInput"
-              name="query"
-              type="search"
-              autocomplete="off"
-              spellcheck="false"
-              placeholder="Search web or type a URL"
-            >
-            <button type="submit">Go</button>
-          </div>
-        </form>
-
-        <section class="shortcuts-panel" aria-labelledby="shortcuts-title">
-          <div class="panel-heading">
-            <div>
-              <h2 id="shortcuts-title">Shortcuts</h2>
-              <p id="shortcutCount">0 marks</p>
-            </div>
-            <button class="icon-button" id="openShortcutDialog" type="button" aria-label="Add shortcut" title="Add shortcut">+</button>
-          </div>
-          <div class="shortcut-grid" id="shortcutGrid"></div>
-          <p class="empty-state" id="emptyState">No shortcuts yet.</p>
-        </section>
-
-        <dialog class="shortcut-dialog" id="shortcutDialog" aria-labelledby="shortcutDialogTitle">
-          <form class="shortcut-form" id="shortcutForm">
-            <div class="dialog-heading">
-              <h2 id="shortcutDialogTitle">Add Shortcut</h2>
-              <button class="icon-button" id="closeShortcutDialog" type="button" aria-label="Close dialog" title="Close">x</button>
-            </div>
-            <label>
-              <span>Name</span>
-              <input id="shortcutName" name="name" type="text" autocomplete="off" placeholder="GitHub">
-            </label>
-            <label>
-              <span>URL</span>
-              <input id="shortcutUrl" name="url" type="url" autocomplete="off" placeholder="https://github.com">
-            </label>
-            <div class="dialog-actions">
-              <button class="secondary-button" id="cancelShortcutDialog" type="button">Cancel</button>
-              <button type="submit">Add</button>
-            </div>
-          </form>
-        </dialog>
-      </section>
-    </main>
-    <script src="newtab.js"></script>
-    <script src="content.js"></script>
-  </body>
+                <dialog
+                    class="shortcut-dialog"
+                    id="shortcutDialog"
+                    aria-labelledby="shortcutDialogTitle"
+                >
+                    <form class="shortcut-form" id="shortcutForm">
+                        <div class="dialog-heading">
+                            <h2 id="shortcutDialogTitle">Add Shortcut</h2>
+                            <button
+                                class="icon-button"
+                                id="closeShortcutDialog"
+                                type="button"
+                                aria-label="Close dialog"
+                                title="Close"
+                            >
+                                x
+                            </button>
+                        </div>
+                        <label>
+                            <span>Name</span>
+                            <input
+                                id="shortcutName"
+                                name="name"
+                                type="text"
+                                autocomplete="off"
+                                placeholder="GitHub"
+                            />
+                        </label>
+                        <label>
+                            <span>URL</span>
+                            <input
+                                id="shortcutUrl"
+                                name="url"
+                                type="url"
+                                autocomplete="off"
+                                placeholder="https://github.com"
+                            />
+                        </label>
+                        <div class="dialog-actions">
+                            <button
+                                class="secondary-button"
+                                id="cancelShortcutDialog"
+                                type="button"
+                            >
+                                Cancel
+                            </button>
+                            <button type="submit">Add</button>
+                        </div>
+                    </form>
+                </dialog>
+            </section>
+        </main>
+        <script src="newtab.js"></script>
+        <script src="content.js"></script>
+    </body>
 </html>
