@@ -8,6 +8,7 @@ Vibe Vim is a Chrome/Chromium/Brave extension for keyboard-first page navigation
 - Normal-mode scrolling with `h`, `j`, `k`, `l`.
 - Page movement with `u`, `d`, `gg`, and `G`.
 - Browser history movement with `H` and `L`.
+- New tab opening with `t`.
 - Current tab closing with `x`.
 - Link hints with `f`.
 - Popup toggles for enablement, smooth scroll, and hints.

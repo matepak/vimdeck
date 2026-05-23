@@ -29,7 +29,7 @@ Build a practical Vim-style keyboard navigation extension for Chrome, Chromium, 
 
 ## Phase 4: Browser Commands
 
-- Add tab movement and tab closing commands through extension commands/background scripts.
+- Add tab opening, tab movement, and tab closing commands through extension commands/background scripts.
 - Add page search and mark/jump support.
 - Add a command palette for less frequent actions.
 
