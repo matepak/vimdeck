@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Vibe Vim",
-  "description": "Keyboard-first Vim-style navigation for Chrome, Chromium, and Brave.",
+  "name": "Vimdeck",
+  "description": "Keyboard-first Vim-style navigation and a focused new-tab dashboard for Chrome, Chromium, and Brave.",
   "version": "0.1.0",
   "permissions": [
     "storage",
@@ -11,7 +11,7 @@
     "<all_urls>"
   ],
   "action": {
-    "default_title": "Vibe Vim",
+    "default_title": "Vimdeck",
     "default_popup": "src/popup.html"
   },
   "background": {

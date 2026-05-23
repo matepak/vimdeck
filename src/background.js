@@ -1,14 +1,14 @@
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (!message) return;
 
-  if (message.type === "VIBE_VIM_OPEN_TAB") {
+  if (message.type === "VIMDECK_OPEN_TAB") {
     openTabNearSender(sender)
       .then((tab) => sendResponse({ ok: true, tabId: tab.id }))
       .catch((error) => sendResponse({ ok: false, error: error.message }));
     return true;
   }
 
-  if (message.type !== "VIBE_VIM_CLOSE_TAB") return;
+  if (message.type !== "VIMDECK_CLOSE_TAB") return;
 
   resolveSenderTab(sender).then((tab) => {
     if (!tab || typeof tab.id !== "number") {

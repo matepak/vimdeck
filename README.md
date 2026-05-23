@@ -1,6 +1,6 @@
-# Vibe Vim
+# Vimdeck
 
-Vibe Vim is a Chrome/Chromium/Brave extension for keyboard-first page navigation with Vim-style keys.
+Vimdeck is a Chrome/Chromium/Brave extension for keyboard-first page navigation with Vim-style keys and a focused new-tab dashboard.
 
 ## Current Scope
 

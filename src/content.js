@@ -156,7 +156,7 @@
     const close = document.createElement("button");
     const grid = document.createElement("div");
 
-    overlay.className = "vibe-vim-help-layer";
+    overlay.className = "vimdeck-help-layer";
     overlay.style.cssText = [
       "position:fixed",
       "inset:0",
@@ -170,7 +170,7 @@
 
     dialog.setAttribute("role", "dialog");
     dialog.setAttribute("aria-modal", "true");
-    dialog.setAttribute("aria-labelledby", "vibe-vim-help-title");
+    dialog.setAttribute("aria-labelledby", "vimdeck-help-title");
     dialog.style.cssText = [
       "width:min(560px,100%)",
       "max-height:min(720px,calc(100vh - 48px))",
@@ -190,7 +190,7 @@
       "padding:18px 18px 10px"
     ].join(";");
 
-    title.id = "vibe-vim-help-title";
+    title.id = "vimdeck-help-title";
     title.textContent = "Mapped Keys";
     title.style.cssText = "margin:0;color:#f5f0df;font-size:18px;line-height:1.2";
 
@@ -299,11 +299,11 @@
   }
 
   function openNewTab() {
-    chrome.runtime.sendMessage({ type: "VIBE_VIM_OPEN_TAB" });
+    chrome.runtime.sendMessage({ type: "VIMDECK_OPEN_TAB" });
   }
 
   function closeCurrentTab() {
-    chrome.runtime.sendMessage({ type: "VIBE_VIM_CLOSE_TAB" });
+    chrome.runtime.sendMessage({ type: "VIMDECK_CLOSE_TAB" });
   }
 
   function showHints() {
@@ -312,7 +312,7 @@
     if (!targets.length) return;
 
     state.hintLayer = document.createElement("div");
-    state.hintLayer.className = "vibe-vim-hint-layer";
+    state.hintLayer.className = "vimdeck-hint-layer";
     state.hintLayer.style.cssText = [
       "position:fixed",
       "inset:0",

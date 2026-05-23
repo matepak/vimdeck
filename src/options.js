@@ -32,7 +32,7 @@
   });
 
   reset.addEventListener("click", () => {
-    chrome.storage.sync.set({ settings: VIBE_VIM_DEFAULTS }, () => {
+    chrome.storage.sync.set({ settings: VIMDECK_DEFAULTS }, () => {
       load();
       flash("Reset");
     });
@@ -53,7 +53,7 @@
   }
 
   function load() {
-    chrome.storage.sync.get({ settings: VIBE_VIM_DEFAULTS }, (data) => {
+    chrome.storage.sync.get({ settings: VIMDECK_DEFAULTS }, (data) => {
       const settings = mergeSettings(data.settings);
       form.scrollStep.value = settings.scrollStep;
       form.halfPageRatio.value = settings.halfPageRatio;
@@ -69,7 +69,7 @@
       keymap[name] = document.getElementById(`key-${name}`).value.trim();
     });
 
-    chrome.storage.sync.get({ settings: VIBE_VIM_DEFAULTS }, (data) => {
+    chrome.storage.sync.get({ settings: VIMDECK_DEFAULTS }, (data) => {
       const existing = mergeSettings(data.settings);
       chrome.storage.sync.set({
         settings: {
@@ -84,10 +84,10 @@
 
   function mergeSettings(settings) {
     return {
-      ...VIBE_VIM_DEFAULTS,
+      ...VIMDECK_DEFAULTS,
       ...(settings || {}),
       keymap: {
-        ...VIBE_VIM_DEFAULTS.keymap,
+        ...VIMDECK_DEFAULTS.keymap,
         ...((settings && settings.keymap) || {})
       }
     };

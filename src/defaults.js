@@ -1,4 +1,4 @@
-const VIBE_VIM_DEFAULTS = {
+const VIMDECK_DEFAULTS = {
   enabled: true,
   smoothScroll: true,
   scrollStep: 80,
@@ -24,5 +24,5 @@ const VIBE_VIM_DEFAULTS = {
 };
 
 if (typeof module !== "undefined") {
-  module.exports = { VIBE_VIM_DEFAULTS };
+  module.exports = { VIMDECK_DEFAULTS };
 }

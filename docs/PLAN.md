@@ -1,4 +1,4 @@
-# Vibe Vim Plan
+# Vimdeck Plan
 
 ## Goal
 
