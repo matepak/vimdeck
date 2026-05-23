@@ -4,7 +4,11 @@
   "description": "Keyboard-first Vim-style navigation for Chrome, Chromium, and Brave.",
   "version": "0.1.0",
   "permissions": [
-    "storage"
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "action": {
     "default_title": "Vibe Vim",
@@ -12,6 +16,9 @@
   },
   "background": {
     "service_worker": "src/background.js"
+  },
+  "chrome_url_overrides": {
+    "newtab": "src/newtab.html"
   },
   "options_page": "src/options.html",
   "content_scripts": [
