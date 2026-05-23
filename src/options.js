@@ -17,6 +17,7 @@
     hints: "Open link hints",
     goBack: "History back",
     goForward: "History forward",
+    closeTab: "Close tab",
     cancel: "Cancel"
   };
 

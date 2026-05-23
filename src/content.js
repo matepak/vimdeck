@@ -19,6 +19,7 @@
       hints: "f",
       goBack: "H",
       goForward: "L",
+      closeTab: "x",
       cancel: "Escape"
     }
   };
@@ -130,7 +131,12 @@
     if (action === "pageUp") window.scrollBy({ top: -halfPage, behavior });
     if (action === "goBack") window.history.back();
     if (action === "goForward") window.history.forward();
+    if (action === "closeTab") closeCurrentTab();
     if (action === "hints" && state.settings.hintsEnabled) showHints();
+  }
+
+  function closeCurrentTab() {
+    chrome.runtime.sendMessage({ type: "VIBE_VIM_CLOSE_TAB" });
   }
 
   function showHints() {
