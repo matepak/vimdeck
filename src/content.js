@@ -292,9 +292,10 @@
   }
 
   function displayKey(key) {
-    if (key === "G") return "Shift+G";
-    if (key === "L") return "Shift+L";
     if (key === "Escape") return "Esc";
+    if (key.length === 1 && key === key.toUpperCase() && key !== key.toLowerCase()) {
+      return `Shift+${key}`;
+    }
     return key;
   }
 
