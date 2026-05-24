@@ -29,6 +29,11 @@
   loadTheme();
   loadShortcuts();
 
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync" || !changes[THEME_STORAGE_KEY]) return;
+    setTheme(changes[THEME_STORAGE_KEY].newValue);
+  });
+
   searchForm.addEventListener("submit", (event) => {
     event.preventDefault();
     const target = targetFromQuery(searchInput.value);

@@ -27,8 +27,11 @@
   };
 
   const HINT_CHARS = "asdfghjklqwertyuiopzxcvbnm";
+  const THEME_STORAGE_KEY = "newtabTheme";
+  const DEFAULT_THEME = "dark";
   const state = {
     settings: DEFAULTS,
+    theme: DEFAULT_THEME,
     sequence: "",
     sequenceTimer: 0,
     hints: [],
@@ -38,10 +41,17 @@
   };
 
   loadSettings();
+  loadTheme();
   chrome.storage.onChanged.addListener((changes, area) => {
-    if (area !== "sync" || !changes.settings) return;
-    state.settings = mergeSettings(changes.settings.newValue || {});
-    clearHints();
+    if (area !== "sync") return;
+    if (changes.settings) {
+      state.settings = mergeSettings(changes.settings.newValue || {});
+      clearHints();
+    }
+    if (changes[THEME_STORAGE_KEY]) {
+      state.theme = currentTheme(changes[THEME_STORAGE_KEY].newValue);
+      if (state.helpLayer) showHelp();
+    }
   });
 
   window.addEventListener("keydown", onKeyDown, true);
@@ -49,6 +59,12 @@
   function loadSettings() {
     chrome.storage.sync.get({ settings: DEFAULTS }, (data) => {
       state.settings = mergeSettings(data.settings);
+    });
+  }
+
+  function loadTheme() {
+    chrome.storage.sync.get({ [THEME_STORAGE_KEY]: DEFAULT_THEME }, (data) => {
+      state.theme = currentTheme(data[THEME_STORAGE_KEY]);
     });
   }
 
@@ -148,6 +164,7 @@
 
   function showHelp() {
     clearHelp();
+    const colors = helpColors();
 
     const overlay = document.createElement("div");
     const dialog = document.createElement("section");
@@ -164,7 +181,7 @@
       "display:grid",
       "place-items:center",
       "padding:24px",
-      "background:rgba(9,11,12,.72)",
+      `background:${colors.backdrop}`,
       "font:14px/1.4 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,sans-serif"
     ].join(";");
 
@@ -175,11 +192,11 @@
       "width:min(560px,100%)",
       "max-height:min(720px,calc(100vh - 48px))",
       "overflow:auto",
-      "border:1px solid #303836",
+      `border:1px solid ${colors.border}`,
       "border-radius:8px",
-      "background:#15191a",
-      "color:#e8ece7",
-      "box-shadow:0 24px 90px rgba(0,0,0,.58)"
+      `background:${colors.surfaceStrong}`,
+      `color:${colors.text}`,
+      `box-shadow:0 24px 90px ${colors.shadow}`
     ].join(";");
 
     heading.style.cssText = [
@@ -192,7 +209,7 @@
 
     title.id = "vimdeck-help-title";
     title.textContent = "Mapped Keys";
-    title.style.cssText = "margin:0;color:#f5f0df;font-size:18px;line-height:1.2";
+    title.style.cssText = `margin:0;color:${colors.textStrong};font-size:18px;line-height:1.2`;
 
     close.type = "button";
     close.textContent = "x";
@@ -202,10 +219,10 @@
       "width:30px",
       "height:30px",
       "place-items:center",
-      "border:1px solid #303836",
+      `border:1px solid ${colors.border}`,
       "border-radius:7px",
-      "background:#171c1d",
-      "color:#8d9691",
+      `background:${colors.surface}`,
+      `color:${colors.muted}`,
       "font:700 15px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace",
       "cursor:pointer"
     ].join(";");
@@ -229,10 +246,10 @@
         "justify-content:space-between",
         "gap:16px",
         "min-height:38px",
-        "border:1px solid #303836",
+        `border:1px solid ${colors.border}`,
         "border-radius:7px",
         "padding:8px 10px",
-        "background:#171c1d"
+        `background:${colors.surface}`
       ].join(";");
 
       keyEl.textContent = displayKey(key);
@@ -240,14 +257,14 @@
         "min-width:54px",
         "border-radius:5px",
         "padding:5px 8px",
-        "background:#242b2a",
-        "color:#91d18b",
+        `background:${colors.surfaceSoft}`,
+        `color:${colors.accent}`,
         "text-align:center",
         "font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace"
       ].join(";");
 
       labelEl.textContent = label;
-      labelEl.style.cssText = "color:#d4dad6;text-align:right";
+      labelEl.style.cssText = `color:${colors.text};text-align:right`;
 
       row.append(keyEl, labelEl);
       grid.appendChild(row);
@@ -297,6 +314,40 @@
       return `Shift+${key}`;
     }
     return key;
+  }
+
+  function currentTheme(value) {
+    return value === "light" ? "light" : "dark";
+  }
+
+  function helpColors() {
+    if (state.theme === "light") {
+      return {
+        backdrop: "rgba(28,36,34,.42)",
+        surface: "#fffdf7",
+        surfaceStrong: "#f9f7f0",
+        surfaceSoft: "#e9efe6",
+        border: "#d7ddd4",
+        text: "#1c2422",
+        textStrong: "#151b19",
+        muted: "#6c7772",
+        accent: "#34785d",
+        shadow: "rgba(40,48,45,.26)"
+      };
+    }
+
+    return {
+      backdrop: "rgba(9,11,12,.72)",
+      surface: "#171c1d",
+      surfaceStrong: "#15191a",
+      surfaceSoft: "#242b2a",
+      border: "#303836",
+      text: "#d4dad6",
+      textStrong: "#f5f0df",
+      muted: "#8d9691",
+      accent: "#91d18b",
+      shadow: "rgba(0,0,0,.58)"
+    };
   }
 
   function openNewTab() {

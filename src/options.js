@@ -5,6 +5,9 @@
   const keymapContainer = document.getElementById("keymap");
   const status = document.getElementById("status");
   const reset = document.getElementById("reset");
+  const themeButtons = Array.from(document.querySelectorAll("[data-theme-value]"));
+  const THEME_STORAGE_KEY = "newtabTheme";
+  const DEFAULT_THEME = "dark";
   const keyNames = {
     scrollDown: "Scroll down",
     scrollUp: "Scroll up",
@@ -24,6 +27,7 @@
   };
 
   renderKeymap();
+  loadTheme();
   load();
 
   form.addEventListener("submit", (event) => {
@@ -36,6 +40,15 @@
       load();
       flash("Reset");
     });
+  });
+
+  themeButtons.forEach((button) => {
+    button.addEventListener("click", () => saveTheme(button.dataset.themeValue));
+  });
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync" || !changes[THEME_STORAGE_KEY]) return;
+    setTheme(changes[THEME_STORAGE_KEY].newValue);
   });
 
   function renderKeymap() {
@@ -61,6 +74,29 @@
         document.getElementById(`key-${name}`).value = settings.keymap[name];
       });
     });
+  }
+
+  function loadTheme() {
+    chrome.storage.sync.get({ [THEME_STORAGE_KEY]: DEFAULT_THEME }, (data) => {
+      setTheme(data[THEME_STORAGE_KEY]);
+    });
+  }
+
+  function saveTheme(value) {
+    setTheme(value);
+    chrome.storage.sync.set({ [THEME_STORAGE_KEY]: currentTheme(value) });
+  }
+
+  function setTheme(value) {
+    const theme = currentTheme(value);
+    document.documentElement.dataset.theme = theme;
+    themeButtons.forEach((button) => {
+      button.setAttribute("aria-pressed", String(button.dataset.themeValue === theme));
+    });
+  }
+
+  function currentTheme(value) {
+    return value === "light" ? "light" : "dark";
   }
 
   function save() {

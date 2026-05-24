@@ -3,6 +3,8 @@
 
   const fields = ["enabled", "smoothScroll", "hintsEnabled"];
   const keys = document.getElementById("keys");
+  const THEME_STORAGE_KEY = "newtabTheme";
+  const DEFAULT_THEME = "dark";
   const actionLabels = {
     scrollDown: "Down",
     scrollUp: "Up",
@@ -21,7 +23,11 @@
     cancel: "Cancel"
   };
 
-  chrome.storage.sync.get({ settings: VIMDECK_DEFAULTS }, (data) => {
+  chrome.storage.sync.get({
+    settings: VIMDECK_DEFAULTS,
+    [THEME_STORAGE_KEY]: DEFAULT_THEME
+  }, (data) => {
+    setTheme(data[THEME_STORAGE_KEY]);
     const settings = mergeSettings(data.settings);
     fields.forEach((field) => {
       const input = document.getElementById(field);
@@ -29,6 +35,11 @@
       input.addEventListener("change", () => saveField(field, input.checked));
     });
     renderKeys(settings.keymap);
+  });
+
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== "sync" || !changes[THEME_STORAGE_KEY]) return;
+    setTheme(changes[THEME_STORAGE_KEY].newValue);
   });
 
   function saveField(field, value) {
@@ -68,6 +79,10 @@
         ...((settings && settings.keymap) || {})
       }
     };
+  }
+
+  function setTheme(value) {
+    document.documentElement.dataset.theme = value === "light" ? "light" : "dark";
   }
 
   function displayKey(key) {
