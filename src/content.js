@@ -82,6 +82,8 @@
   function onKeyDown(event) {
     if (!state.settings.enabled || event.defaultPrevented) return;
 
+    if (shouldIgnoreEvent(event)) return;
+
     if (state.hintLayer) {
       handleHintKey(event);
       return;
@@ -91,8 +93,6 @@
       handleHelpKey(event);
       return;
     }
-
-    if (shouldIgnoreEvent(event)) return;
 
     const key = normalizeKey(event);
     const action = resolveAction(key);
@@ -105,14 +105,34 @@
 
   function shouldIgnoreEvent(event) {
     if (event.altKey || event.ctrlKey || event.metaKey) return true;
-    const active = document.activeElement;
-    if (!active) return false;
-    if (active.isContentEditable) return true;
-    const tagName = active.tagName ? active.tagName.toLowerCase() : "";
+
+    const path = typeof event.composedPath === "function" ? event.composedPath() : [];
+    if (path.some(isEditableElement)) return true;
+
+    return isEditableElement(deepActiveElement(document));
+  }
+
+  function deepActiveElement(root) {
+    let active = root.activeElement;
+    while (active && active.shadowRoot && active.shadowRoot.activeElement) {
+      active = active.shadowRoot.activeElement;
+    }
+    return active;
+  }
+
+  function isEditableElement(element) {
+    if (!element || element === window || element === document) return false;
+    if (element.isContentEditable) return true;
+
+    const tagName = element.tagName ? element.tagName.toLowerCase() : "";
     if (tagName === "textarea" || tagName === "select") return true;
-    if (tagName !== "input") return false;
-    const type = (active.getAttribute("type") || "text").toLowerCase();
-    return !["button", "checkbox", "radio", "range", "reset", "submit"].includes(type);
+    if (tagName === "input") {
+      const type = (element.getAttribute("type") || "text").toLowerCase();
+      return !["button", "checkbox", "radio", "range", "reset", "submit"].includes(type);
+    }
+
+    const role = element.getAttribute ? element.getAttribute("role") : "";
+    return role === "textbox" || role === "searchbox";
   }
 
   function normalizeKey(event) {
