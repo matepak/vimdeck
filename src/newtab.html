@@ -59,15 +59,27 @@
                             <h2 id="shortcuts-title">Shortcuts</h2>
                             <p id="shortcutCount">0 marks</p>
                         </div>
-                        <button
-                            class="icon-button"
-                            id="openShortcutDialog"
-                            type="button"
-                            aria-label="Add shortcut"
-                            title="Add shortcut"
-                        >
-                            +
-                        </button>
+                        <div class="panel-actions">
+                            <button
+                                class="icon-button"
+                                id="toggleShortcutEditing"
+                                type="button"
+                                aria-label="Edit shortcuts"
+                                title="Edit shortcuts"
+                                aria-pressed="false"
+                            >
+                                🔧
+                            </button>
+                            <button
+                                class="icon-button"
+                                id="openShortcutDialog"
+                                type="button"
+                                aria-label="Add shortcut"
+                                title="Add shortcut"
+                            >
+                                +
+                            </button>
+                        </div>
                     </div>
                     <div class="shortcut-grid" id="shortcutGrid"></div>
                     <p class="empty-state" id="emptyState">No shortcuts yet.</p>
@@ -119,7 +131,7 @@
                             >
                                 Cancel
                             </button>
-                            <button type="submit">Add</button>
+                            <button id="saveShortcut" type="submit">Add</button>
                         </div>
                     </form>
                 </dialog>

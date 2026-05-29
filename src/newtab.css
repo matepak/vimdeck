@@ -238,6 +238,17 @@ h2 {
   outline: 0;
 }
 
+.icon-button[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-text);
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .shortcut-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -250,6 +261,7 @@ h2 {
   border: 1px solid var(--border);
   border-radius: 8px;
   background: var(--surface);
+  transition: border-color 120ms ease, opacity 120ms ease, transform 120ms ease;
 }
 
 .shortcut-link {
@@ -257,14 +269,48 @@ h2 {
   grid-template-columns: 34px 1fr;
   align-items: center;
   min-height: 76px;
-  padding: 14px 34px 14px 14px;
+  padding: 14px;
   color: var(--text);
   text-decoration: none;
+}
+
+.shortcut-grid.is-editing .shortcut-link {
+  cursor: pointer;
+  padding-right: 46px;
 }
 
 .shortcut-tile:hover,
 .shortcut-tile:focus-within {
   border-color: var(--warn);
+}
+
+.shortcut-tile.is-dragging {
+  opacity: 0.46;
+  transform: scale(0.98);
+}
+
+.shortcut-tile.is-drop-before,
+.shortcut-tile.is-drop-after {
+  border-color: var(--accent);
+}
+
+.shortcut-tile.is-drop-before::before,
+.shortcut-tile.is-drop-after::after {
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+  content: "";
+}
+
+.shortcut-tile.is-drop-before::before {
+  left: -7px;
+}
+
+.shortcut-tile.is-drop-after::after {
+  right: -7px;
 }
 
 .shortcut-link:focus {
