@@ -73,6 +73,7 @@
       Object.keys(keyNames).forEach((name) => {
         document.getElementById(`key-${name}`).value = settings.keymap[name];
       });
+      form.disabledSites.value = settings.disabledSites.join("\n");
     });
   }
 
@@ -105,6 +106,11 @@
       keymap[name] = document.getElementById(`key-${name}`).value.trim();
     });
 
+    const disabledSites = form.disabledSites.value
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean);
+
     chrome.storage.sync.get({ settings: VIMDECK_DEFAULTS }, (data) => {
       const existing = mergeSettings(data.settings);
       chrome.storage.sync.set({
@@ -112,6 +118,7 @@
           ...existing,
           scrollStep: Number(form.scrollStep.value),
           halfPageRatio: Number(form.halfPageRatio.value),
+          disabledSites,
           keymap
         }
       }, () => flash("Saved"));

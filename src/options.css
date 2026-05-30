@@ -64,13 +64,39 @@ label {
   margin: 10px 0;
 }
 
-input {
+input,
+textarea {
   border: 1px solid var(--field-border);
   border-radius: 6px;
   background: var(--field-bg);
   color: var(--text);
   font: inherit;
   padding: 8px 10px;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+
+.hint code {
+  background: var(--field-bg);
+  border: 1px solid var(--field-border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  font-size: 12px;
 }
 
 .theme-row {

@@ -3,6 +3,7 @@
 
   const fields = ["enabled", "smoothScroll", "hintsEnabled"];
   const keys = document.getElementById("keys");
+  let activeHost = "";
   const THEME_STORAGE_KEY = "newtabTheme";
   const DEFAULT_THEME = "dark";
   const actionLabels = {
@@ -35,6 +36,7 @@
       input.addEventListener("change", () => saveField(field, input.checked));
     });
     renderKeys(settings.keymap);
+    setupSiteToggle(settings);
   });
 
   chrome.storage.onChanged.addListener((changes, area) => {
@@ -50,6 +52,43 @@
           ...(data.settings || {}),
           [field]: value
         }
+      });
+    });
+  }
+
+  function setupSiteToggle(settings) {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+      const url = tabs && tabs[0] && tabs[0].url;
+      let parsed = null;
+      try {
+        parsed = url ? new URL(url) : null;
+      } catch (error) {
+        parsed = null;
+      }
+      if (!parsed || !/^https?:$/.test(parsed.protocol)) return;
+
+      activeHost = parsed.hostname;
+      const input = document.getElementById("disableSite");
+      document.getElementById("siteToggleLabel").textContent = `Disable on ${activeHost}`;
+      // Reflect any matching pattern (wildcard/path included), not just a bare
+      // hostname entry, so the checkbox agrees with what content.js actually does.
+      input.checked = vimdeckMatchesDisabledSite(url, settings.disabledSites);
+      document.getElementById("siteToggle").hidden = false;
+      input.addEventListener("change", () => toggleSite(input.checked));
+    });
+  }
+
+  function toggleSite(disable) {
+    chrome.storage.sync.get({ settings: VIMDECK_DEFAULTS }, (data) => {
+      const settings = mergeSettings(data.settings);
+      const sites = new Set(settings.disabledSites);
+      if (disable) {
+        sites.add(activeHost);
+      } else {
+        sites.delete(activeHost);
+      }
+      chrome.storage.sync.set({
+        settings: { ...settings, disabledSites: Array.from(sites) }
       });
     });
   }

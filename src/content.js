@@ -7,6 +7,7 @@
     scrollStep: 80,
     halfPageRatio: 0.5,
     hintsEnabled: true,
+    disabledSites: [],
     keymap: {
       scrollDown: "j",
       scrollUp: "k",
@@ -31,6 +32,7 @@
   const DEFAULT_THEME = "dark";
   const state = {
     settings: DEFAULTS,
+    siteDisabled: false,
     theme: DEFAULT_THEME,
     sequence: "",
     sequenceTimer: 0,
@@ -46,6 +48,7 @@
     if (area !== "sync") return;
     if (changes.settings) {
       state.settings = mergeSettings(changes.settings.newValue || {});
+      state.siteDisabled = isCurrentSiteDisabled();
       clearHints();
     }
     if (changes[THEME_STORAGE_KEY]) {
@@ -59,7 +62,51 @@
   function loadSettings() {
     chrome.storage.sync.get({ settings: DEFAULTS }, (data) => {
       state.settings = mergeSettings(data.settings);
+      state.siteDisabled = isCurrentSiteDisabled();
     });
+  }
+
+  function isCurrentSiteDisabled() {
+    return matchesDisabledSite(window.location.href, state.settings.disabledSites);
+  }
+
+  // Mirrors vimdeckMatchesDisabledSite() in defaults.js; content scripts can't
+  // share modules, so the matcher is duplicated here (as DEFAULTS already is).
+  function matchesDisabledSite(url, patterns) {
+    if (!Array.isArray(patterns) || !url) return false;
+
+    let parsed;
+    try {
+      parsed = new URL(url);
+    } catch (error) {
+      return false;
+    }
+
+    const hostname = parsed.hostname;
+    const hostPath = hostname + parsed.pathname;
+
+    return patterns.some((raw) => {
+      const pattern = (raw || "").trim();
+      if (!pattern) return false;
+
+      if (pattern.includes("*")) {
+        const subject = pattern.includes("/") ? hostPath : hostname;
+        return globToRegExp(pattern).test(subject);
+      }
+
+      if (pattern.includes("/")) {
+        return hostPath === pattern || hostPath.startsWith(pattern);
+      }
+
+      return hostname === pattern || hostname.endsWith("." + pattern);
+    });
+  }
+
+  function globToRegExp(pattern) {
+    const escaped = pattern
+      .replace(/[.+?^${}()|[\]\\]/g, "\\$&")
+      .replace(/\*/g, ".*");
+    return new RegExp("^" + escaped + "$");
   }
 
   function loadTheme() {
@@ -80,7 +127,7 @@
   }
 
   function onKeyDown(event) {
-    if (!state.settings.enabled || event.defaultPrevented) return;
+    if (!state.settings.enabled || state.siteDisabled || event.defaultPrevented) return;
 
     if (shouldIgnoreEvent(event)) return;
 

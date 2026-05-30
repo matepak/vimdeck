@@ -38,6 +38,18 @@
           <div id="keymap" class="keymap"></div>
         </section>
 
+        <section>
+          <h2>Disabled sites</h2>
+          <p class="hint">
+            One pattern per line. Key mappings are turned off on matching pages.
+            Use a hostname (<code>example.com</code> also matches subdomains),
+            <code>*</code> as a wildcard (<code>*.example.com</code>), or include
+            a path (<code>example.com/app</code>, <code>github.com/me/*</code>).
+          </p>
+          <textarea id="disabledSites" name="disabledSites" rows="5"
+            spellcheck="false" placeholder="mail.google.com&#10;*.example.com&#10;docs.google.com/document"></textarea>
+        </section>
+
         <footer>
           <button type="submit">Save</button>
           <button id="reset" type="button">Reset</button>
