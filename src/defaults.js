@@ -53,7 +53,9 @@ function vimdeckMatchesDisabledSite(url, patterns) {
     }
 
     if (pattern.includes("/")) {
-      return hostPath === pattern || hostPath.startsWith(pattern);
+      if (hostPath === pattern) return true;
+      const prefix = pattern.endsWith("/") ? pattern : pattern + "/";
+      return hostPath.startsWith(prefix);
     }
 
     return hostname === pattern || hostname.endsWith("." + pattern);

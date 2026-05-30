@@ -337,6 +337,7 @@
   }
 
   function looksLikeUrl(value) {
+    if (/\s/.test(value)) return false;
     return /^[a-z][a-z0-9+.-]*:\/\//i.test(value) || value.includes(".") || value.startsWith("localhost");
   }
 
