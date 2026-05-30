@@ -319,8 +319,6 @@
   function targetFromQuery(query) {
     const trimmed = query.trim();
     if (!trimmed) return "";
-    const url = normalizeUrl(trimmed);
-    if (looksLikeUrl(trimmed) && url) return url;
     return `https://www.google.com/search?q=${encodeURIComponent(trimmed)}`;
   }
 
@@ -334,11 +332,6 @@
     } catch (_error) {
       return "";
     }
-  }
-
-  function looksLikeUrl(value) {
-    if (/\s/.test(value)) return false;
-    return /^[a-z][a-z0-9+.-]*:\/\//i.test(value) || value.includes(".") || value.startsWith("localhost");
   }
 
   function hostFromUrl(url) {
